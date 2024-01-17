@@ -14,7 +14,7 @@ class ResultsView extends StatelessWidget {
         stream: FirebaseFirestore.instance.collection('results').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           }
 
           List<Result> results = snapshot.data!.docs.map((doc) {

@@ -4,24 +4,35 @@ import 'package:rm_connect/models/news.dart';
 import 'package:rm_connect/widgets/news_item.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class NewsPageView extends StatelessWidget {
+class NewsPageView extends StatefulWidget {
+  const NewsPageView({super.key});
+  @override
+  State<NewsPageView> createState() => _NewsPageViewState();
+}
+
+class _NewsPageViewState extends State<NewsPageView>
+    with AutomaticKeepAliveClientMixin {
   final _pageController = PageController();
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
+    super.build(context);
+    return SizedBox(
       height: 500,
       child: Column(
         children: [
           StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance.collection('news').snapshots(),
             builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+              if (!snapshot.hasData) {
+                return const CircularProgressIndicator();
               }
 
               if (snapshot.hasError) {
-                return Text('Error loading data');
+                return const Text('Error loading data');
               }
 
               List<News> news = snapshot.data!.docs.map((doc) {
@@ -37,8 +48,11 @@ class NewsPageView extends StatelessWidget {
               return Expanded(
                 child: PageView.builder(
                   controller: _pageController,
-                  itemBuilder: (ctx, index) => NewsItem(
-                    news: news[index],
+                  itemBuilder: (ctx, index) => AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: NewsItem(
+                      news: news[index],
+                    ),
                   ),
                   itemCount: news.length,
                 ),
@@ -52,12 +66,11 @@ class NewsPageView extends StatelessWidget {
             stream: FirebaseFirestore.instance.collection('news').snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return SizedBox
-                    .shrink(); // Prikazati prazan widget tijekom dohvaćanja
+                return const Center(child: CircularProgressIndicator());
               }
 
               if (snapshot.hasError) {
-                return Text('Error loading data');
+                return const Text('Error loading data');
               }
 
               List<News> news = snapshot.data!.docs.map((doc) {

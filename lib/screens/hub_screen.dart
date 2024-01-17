@@ -3,7 +3,7 @@ import 'package:rm_connect/screens/home.dart';
 import 'package:rm_connect/screens/squad_screen.dart';
 
 class HubScreen extends StatefulWidget {
-  const HubScreen({Key? key}) : super(key: key);
+  const HubScreen({super.key});
 
   @override
   State<HubScreen> createState() => _HubScreenState();
@@ -38,7 +38,8 @@ class _HubScreenState extends State<HubScreen> {
           setState(() {
             _selectedIndex = index;
             _pageController.animateToPage(index,
-                duration: Duration(milliseconds: 300), curve: Curves.easeInOut);
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.linear);
           });
         },
         items: const [
@@ -52,11 +53,6 @@ class _HubScreenState extends State<HubScreen> {
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
         controller: _pageController,
-        onPageChanged: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
         children: const [
           HomeScreen(),
           SquadScreen(),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rm_connect/data/dummyNews.dart';
-import 'package:rm_connect/data/dummyResults.dart';
+
 import 'package:rm_connect/widgets/news_page_view.dart';
 import 'package:rm_connect/widgets/results_view.dart';
 import 'package:rm_connect/widgets/videos_view.dart';
@@ -14,16 +13,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final news = dummyNews;
-  final results = dummyResults;
-
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
         SliverList(
           delegate: SliverChildListDelegate([
-            NewsPageView(),
+            const NewsPageView(),
             const SizedBox(
               height: 20,
             ),
@@ -53,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ]),
         ),
-        SliverToBoxAdapter(
+        const SliverToBoxAdapter(
           child: VideosView(),
         )
       ],

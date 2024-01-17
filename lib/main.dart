@@ -19,7 +19,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(primaryColor: Colors.white),
-      home: StartingScreen(),
+      home: const StartingScreen(),
     );
   }
 }
