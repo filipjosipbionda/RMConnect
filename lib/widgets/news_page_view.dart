@@ -13,9 +13,39 @@ class NewsPageView extends StatefulWidget {
 class _NewsPageViewState extends State<NewsPageView>
     with AutomaticKeepAliveClientMixin {
   final _pageController = PageController();
+  List<News> news = [];
 
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchNewsData();
+  }
+
+  Future<void> _fetchNewsData() async {
+    try {
+      final QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('news').get();
+
+      if (snapshot.docs.isNotEmpty) {
+        setState(() {
+          news = snapshot.docs.map((doc) {
+            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+            return News(
+              title: data['title'],
+              date: data['date'],
+              text: data['text'],
+              image: data['image'],
+            );
+          }).toList();
+        });
+      }
+    } catch (error) {
+      print('Error loading data: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,66 +54,26 @@ class _NewsPageViewState extends State<NewsPageView>
       height: 500,
       child: Column(
         children: [
-          StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance.collection('news').snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const CircularProgressIndicator();
-              }
-
-              if (snapshot.hasError) {
-                return const Text('Error loading data');
-              }
-
-              List<News> news = snapshot.data!.docs.map((doc) {
-                Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-                return News(
-                  title: data['title'],
-                  date: data['date'],
-                  text: data['text'],
-                  image: data['image'],
-                );
-              }).toList();
-
-              return Expanded(
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemBuilder: (ctx, index) => AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: NewsItem(
-                      news: news[index],
-                    ),
+          if (news.isEmpty)
+            const CircularProgressIndicator()
+          else
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                itemBuilder: (ctx, index) => AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: NewsItem(
+                    news: news[index],
                   ),
-                  itemCount: news.length,
                 ),
-              );
-            },
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance.collection('news').snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              if (snapshot.hasError) {
-                return const Text('Error loading data');
-              }
-
-              List<News> news = snapshot.data!.docs.map((doc) {
-                Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-                return News(
-                  title: data['title'],
-                  date: data['date'],
-                  text: data['text'],
-                  image: data['image'],
-                );
-              }).toList();
-
-              return SmoothPageIndicator(
+                itemCount: news.length,
+              ),
+            ),
+          Container(
+            margin: const EdgeInsets.only(top: 10),
+            width: double.infinity,
+            child: Center(
+              child: SmoothPageIndicator(
                 controller: _pageController,
                 effect: JumpingDotEffect(
                   activeDotColor: Colors.blue.shade900,
@@ -91,8 +81,8 @@ class _NewsPageViewState extends State<NewsPageView>
                   dotColor: Colors.grey.withOpacity(0.7),
                 ),
                 count: news.length,
-              );
-            },
+              ),
+            ),
           ),
         ],
       ),

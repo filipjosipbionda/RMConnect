@@ -28,7 +28,6 @@ class VideosView extends StatelessWidget {
             return const Text('Error loading data');
           }
 
-          // Koristite `snapshot.data` za pristup najnovijim podacima
           List<Video> videos = snapshot.data!.docs
               .map((doc) => Video(
                   title: doc['title'],
