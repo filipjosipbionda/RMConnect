@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rm_connect/screens/home.dart';
 import 'package:rm_connect/screens/squad_screen.dart';
+import 'package:rm_connect/screens/tracking_screen.dart';
 
 class HubScreen extends StatefulWidget {
   const HubScreen({super.key});
@@ -12,10 +13,16 @@ class HubScreen extends StatefulWidget {
 class _HubScreenState extends State<HubScreen> {
   var _selectedIndex = 0;
   late PageController _pageController;
+  late HomeScreen homeScreen;
+  late SquadScreen squadScreen;
+  late TrackingScreen trackingScreen;
 
   @override
   void initState() {
     super.initState();
+    homeScreen = const HomeScreen();
+    squadScreen = const SquadScreen();
+    trackingScreen = const TrackingScreen();
     _pageController = PageController(initialPage: _selectedIndex);
   }
 
@@ -48,15 +55,14 @@ class _HubScreenState extends State<HubScreen> {
             icon: Icon(Icons.people),
             label: 'Squad',
           ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.track_changes), label: 'Tracker')
         ],
       ),
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
         controller: _pageController,
-        children: const [
-          HomeScreen(),
-          SquadScreen(),
-        ],
+        children: [homeScreen, squadScreen, trackingScreen],
       ),
     );
   }

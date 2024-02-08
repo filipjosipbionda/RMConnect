@@ -1,12 +1,17 @@
 class Player {
-  final String name;
-  final int number;
-  final String position;
-  final String imageUrl;
+  String name;
+  String imageUrl;
+  int number;
+  String position;
+  bool? isTracked;
+  String? documentId;
 
-  const Player(
-      {required this.name,
-      required this.number,
-      required this.position,
-      required this.imageUrl});
+  Player({
+    required this.name,
+    required this.imageUrl,
+    required this.number,
+    required this.position,
+    required this.isTracked,
+    required this.documentId,
+  });
 }

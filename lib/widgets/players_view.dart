@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:rm_connect/models/player.dart';
 import 'package:rm_connect/widgets/player_item.dart';
 
 class PlayersView extends StatefulWidget {
-  const PlayersView({super.key});
+  final List<Player> players;
+
+  const PlayersView({super.key, required this.players});
 
   @override
   State<PlayersView> createState() {
@@ -12,47 +15,119 @@ class PlayersView extends StatefulWidget {
   }
 }
 
-class _PlayersViewState extends State<PlayersView>
-    with AutomaticKeepAliveClientMixin {
-  List<Player> players = [];
-  final _pageController = PageController();
-  @override
-  bool get wantKeepAlive => true;
-  @override
-  void initState() {
-    super.initState();
-    _fetchNewsData();
+class _PlayersViewState extends State<PlayersView> {
+  late List<bool> isPresentList;
+  bool _isSnackBarVisible = false;
+
+  Future<void> _addToFirestore(Player player) async {
+    try {
+      CollectionReference trackedPlayersCollection =
+          FirebaseFirestore.instance.collection('tracked_players');
+
+      CollectionReference playersCollection =
+          FirebaseFirestore.instance.collection('players');
+
+      DocumentReference playersDocumentReference =
+          playersCollection.doc(player.documentId);
+      await playersDocumentReference.update({'isTracked': true});
+
+      DocumentReference documentReference =
+          trackedPlayersCollection.doc(player.documentId);
+
+      await documentReference.set({
+        'name': player.name,
+        'imageUrl': player.imageUrl,
+        'number': player.number,
+        'position': player.position,
+        'documentId': player.documentId,
+        'isTracked': true
+      });
+
+      setState(() {
+        player.isTracked = true;
+        print('Igrač uspješno dodan u Firestore.');
+      });
+    } catch (error) {
+      print('Greška pri dodavanju igrača u Firestore: $error');
+    }
   }
 
-  Future<void> _fetchNewsData() async {
+  Future<void> _removeFromFirestore(Player player) async {
     try {
-      final QuerySnapshot snapshot =
-          await FirebaseFirestore.instance.collection('players').get();
+      CollectionReference trackedPlayersCollection =
+          FirebaseFirestore.instance.collection('tracked_players');
 
-      if (snapshot.docs.isNotEmpty) {
-        setState(() {
-          players = snapshot.docs.map((doc) {
-            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-            return Player(
-              imageUrl: data['imageUrl'],
-              name: data['name'],
-              number: data['number'],
-              position: data['position'],
-            );
-          }).toList();
-        });
-      }
+      CollectionReference playersCollection =
+          FirebaseFirestore.instance.collection('players');
+      DocumentReference playersDocumentReference =
+          playersCollection.doc(player.documentId);
+
+      await playersDocumentReference.update({'isTracked': false});
+
+      DocumentReference trackedPlayersdocumentReference =
+          trackedPlayersCollection.doc(player.documentId);
+
+      await trackedPlayersdocumentReference.delete();
+      setState(() {
+        player.isTracked = false;
+        print('Igrač uspješno obrisan s Firestore-a.');
+      });
     } catch (error) {
-      print('Error loading data: $error');
+      print('Greška pri brisanju igrača u Firestore: $error');
     }
+  }
+
+  void _showRemoveMessage(Player player) {
+    if (_isSnackBarVisible) {
+      return;
+    }
+
+    String playerName = player.name;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('$playerName has been removed from Tracker'),
+      duration:
+          const Duration(seconds: 2), // Možete prilagoditi trajanje snackbar-a
+    ));
+    setState(() {
+      _isSnackBarVisible = true;
+    });
+
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        _isSnackBarVisible = false;
+      });
+    });
+  }
+
+  void _showAddMessage(Player player) {
+    if (_isSnackBarVisible) {
+      return;
+    }
+
+    String playerName = player.name;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('$playerName has been added to Tracker'),
+        duration: const Duration(seconds: 1),
+      ),
+    );
+    setState(() {
+      _isSnackBarVisible = true;
+    });
+
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {
+        _isSnackBarVisible = false;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    List<Player> players = widget.players;
 
     return SizedBox(
-      height: 500,
+      height: 400,
       width: 500,
       child: Column(
         children: [
@@ -60,13 +135,64 @@ class _PlayersViewState extends State<PlayersView>
           Expanded(
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              controller: _pageController,
-              itemBuilder: (ctx, index) => PlayerItem(
-                player: players[index],
-              ),
+              itemBuilder: (ctx, index) {
+                // Provjeri duljinu isPresentList prije pristupa indeksu
+                String playerKey = players[index].documentId!;
+                return Stack(
+                  children: [
+                    PlayerItem(
+                      key: Key(playerKey),
+                      player: players[index],
+                    ),
+                    Positioned(
+                      top: 26,
+                      right: 26,
+                      child: IconButton(
+                        iconSize: 30,
+                        onPressed: () async {
+                          bool isTracked = players[index].isTracked!;
+                          if (isTracked) {
+                            _showRemoveMessage(players[index]);
+                            await _removeFromFirestore(players[index]);
+                          } else {
+                            _showAddMessage(players[index]);
+                            await _addToFirestore(players[index]);
+                          }
+                        },
+                        icon: StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('tracked_players')
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            return Icon(
+                              shadows: [
+                                players[index].isTracked!
+                                    ? const Shadow(
+                                        color: Colors.black,
+                                        offset: Offset(2,
+                                            2), // Postavite offset prema želji
+                                        blurRadius: 2)
+                                    : const Shadow(
+                                        color: Colors.green,
+                                        offset: Offset(2,
+                                            2), // Postavite offset prema želji
+                                        blurRadius: 2)
+                              ],
+                              Icons.track_changes,
+                              color: players[index].isTracked!
+                                  ? const Color.fromARGB(255, 23, 185, 28)
+                                  : Colors.black,
+                            );
+                          },
+                        ),
+                      ),
+                    )
+                  ],
+                );
+              },
               itemCount: players.length,
             ),
-          )
+          ),
         ],
       ),
     );
