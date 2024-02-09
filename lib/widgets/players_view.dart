@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:rm_connect/models/player.dart';
 import 'package:rm_connect/widgets/player_item.dart';
 

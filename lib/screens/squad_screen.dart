@@ -4,7 +4,7 @@ import 'package:rm_connect/models/player.dart';
 import 'package:rm_connect/widgets/players_view.dart';
 
 class SquadScreen extends StatefulWidget {
-  const SquadScreen({Key? key}) : super(key: key);
+  const SquadScreen({super.key});
 
   @override
   State<SquadScreen> createState() => _SquadScreenState();
@@ -47,17 +47,18 @@ class _SquadScreenState extends State<SquadScreen>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return StreamBuilder<List<Player>>(
       stream: _playersStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Text('No data available');
+          return const Text('No data available');
         }
         players = snapshot.data!;
         goalkeepers =

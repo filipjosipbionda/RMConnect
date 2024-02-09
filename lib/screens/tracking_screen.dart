@@ -79,7 +79,25 @@ class _TrackingScreenState extends State<TrackingScreen> {
     // TODO: implement build
     return Scaffold(
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          const Padding(
+            padding: EdgeInsets.only(top: 50),
+            child: Text(
+              'Tracked Players',
+              style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                      color: Colors.grey,
+                      offset: Offset(2, 2),
+                      blurRadius: 4,
+                    ),
+                  ]),
+            ),
+          ),
           Expanded(
             child: ListView.builder(
               controller: _pageController,

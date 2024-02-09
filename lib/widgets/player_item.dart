@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rm_connect/models/player.dart';
 
@@ -11,7 +10,6 @@ class PlayerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     String playerName = player.name;
     int playerNumber = player.number;
-    String playerPosition = player.position;
     return Center(
       child: Container(
         margin: const EdgeInsets.only(left: 20, right: 20),
