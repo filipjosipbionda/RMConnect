@@ -9,7 +9,7 @@ class ResultsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 100, // Adjust the height as needed
+      height: 100,
       child: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('results').snapshots(),
         builder: (context, snapshot) {

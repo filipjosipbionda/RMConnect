@@ -32,8 +32,7 @@ class _StartingScreenState extends State<StartingScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: AnimatedSwitcher(
-          duration: const Duration(
-              seconds: 1), // Podesite trajanje animacije prema potrebi
+          duration: const Duration(seconds: 1),
           child: showHubScreen
               ? const HubScreen()
               : const Center(
@@ -52,7 +51,6 @@ class _StartingScreenState extends State<StartingScreen> {
                       SizedBox(
                         height: 28,
                       ),
-                      // Opciono: Dodajte neki tekst ili druge elemente
                       Text(
                         'RMConnect',
                         style: TextStyle(

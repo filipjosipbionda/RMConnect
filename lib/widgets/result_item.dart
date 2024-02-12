@@ -7,8 +7,6 @@ class ResultItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-
     return Container(
       width: 160,
       margin: const EdgeInsets.only(right: 20, left: 10),
@@ -16,11 +14,10 @@ class ResultItem extends StatelessWidget {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2), // Boja senke
-            spreadRadius: 2, // Proširenje senke
-            blurRadius: 5, // Zamagljivanje senke
-            offset:
-                Offset(0, 3), // Pomeranje senke u odnosu na kontejner (X, Y)
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(1, 5),
           ),
         ],
         color: Colors.blue,
@@ -46,17 +43,14 @@ class ResultItem extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Grb kluba 1
                     Image.network(
                       result.imageUrlTeamA,
                       width: 30,
                       height: 30,
-                      // Postavite putanju do slike prvog grba
                     ),
                     const SizedBox(width: 8),
-                    // Rezultat
                     Text(
-                      result.result, // Postavite stvarni rezultat
+                      result.result,
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -64,19 +58,16 @@ class ResultItem extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    // Grb kluba 2
                     Image.network(
                       result.imageUrlTeamB,
                       width: 30,
                       height: 30,
-                      // Postavite putanju do slike drugog grba
                     ),
                   ],
                 ),
                 const SizedBox(height: 4),
-                // Datum
                 Text(
-                  result.date, // Postavite stvarni datum
+                  result.date,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 12,

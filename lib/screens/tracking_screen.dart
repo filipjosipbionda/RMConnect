@@ -76,7 +76,6 @@ class _TrackingScreenState extends State<TrackingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

@@ -12,11 +12,7 @@ class NewsItem extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        // Originalna slika
-
         ClipRRect(child: Image.network(fit: BoxFit.fill, news.image)),
-
-        // Zatamnjeni sloj
         Positioned.fill(
           child: InkWell(
             onTap: () {

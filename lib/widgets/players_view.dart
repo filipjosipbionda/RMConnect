@@ -135,7 +135,6 @@ class _PlayersViewState extends State<PlayersView> {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemBuilder: (ctx, index) {
-                // Provjeri duljinu isPresentList prije pristupa indeksu
                 String playerKey = players[index].documentId!;
                 return Stack(
                   children: [
@@ -168,13 +167,11 @@ class _PlayersViewState extends State<PlayersView> {
                                 players[index].isTracked!
                                     ? const Shadow(
                                         color: Colors.black,
-                                        offset: Offset(2,
-                                            2), // Postavite offset prema želji
+                                        offset: Offset(2, 2),
                                         blurRadius: 2)
                                     : const Shadow(
                                         color: Colors.green,
-                                        offset: Offset(2,
-                                            2), // Postavite offset prema želji
+                                        offset: Offset(2, 2),
                                         blurRadius: 2)
                               ],
                               Icons.track_changes,

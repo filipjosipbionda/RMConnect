@@ -35,13 +35,17 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ]),
         ),
-        const SliverToBoxAdapter(
-          child: ResultsView(),
+        SliverToBoxAdapter(
+          child: Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  child: const ResultsView())),
         ),
         SliverList(
           delegate: SliverChildListDelegate([
             Container(
-              margin: const EdgeInsets.only(left: 10),
+              margin: const EdgeInsets.only(top: 10, left: 10),
               child: const Text(
                 'Latest Videos',
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),

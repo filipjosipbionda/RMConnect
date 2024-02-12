@@ -40,8 +40,7 @@ class _SquadScreenState extends State<SquadScreen>
           documentId: data['name'].toLowerCase().replaceAll(' ', '_'),
         );
       }).toList()
-        ..sort((player1, player2) =>
-            player1.number.compareTo(player2.number)); // Sortiranje prema broju
+        ..sort((player1, player2) => player1.number.compareTo(player2.number));
     });
   }
 

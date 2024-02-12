@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 class VideoItem extends StatelessWidget {
   final Video video;
 
-  const VideoItem({Key? key, required this.video}) : super(key: key);
+  const VideoItem({super.key, required this.video});
 
   @override
   Widget build(BuildContext context) {
