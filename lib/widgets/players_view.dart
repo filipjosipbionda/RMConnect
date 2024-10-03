@@ -85,7 +85,7 @@ class _PlayersViewState extends State<PlayersView> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text('$playerName has been removed from Tracker'),
       duration:
-          const Duration(seconds: 2), // Možete prilagoditi trajanje snackbar-a
+          const Duration(seconds: 2),
     ));
     setState(() {
       _isSnackBarVisible = true;

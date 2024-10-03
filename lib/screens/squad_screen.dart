@@ -30,7 +30,7 @@ class _SquadScreenState extends State<SquadScreen>
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {
-        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        Map<String, dynamic> data = doc.data();
         return Player(
           imageUrl: data['imageUrl'],
           name: data['name'],
